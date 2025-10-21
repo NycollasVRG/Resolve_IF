@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portal de Reclamações / Denúncias</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Portal do Aluno</div>
+      <nav class="nav">
+        <button data-view="home" class="active">Início</button>
+        <button data-view="create">Criar reclamação/denúncia</button>
+        <button data-view="posts">Posts</button>
+        <button data-view="coord">Painel Coordenação</button>
+        <button data-view="settings">Configurações</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section id="home" class="view card">
+        <h1>Bem-vindo</h1>
+        <p class="meta">Use o menu para criar uma nova reclamação ou visualizar posts. A privacidade e integridade são priorizadas.</p>
+      </section>
+
+      <section id="create" class="view card hidden">
+        <h1>Criar reclamação / denúncia</h1>
+        <form id="complaintForm">
+          <div class="field">
+            <label for="title">Assunto</label>
+            <input id="title" name="title" type="text" placeholder="Ex: Barulho na sala" required>
+          </div>
+
+          <div class="field two">
+            <div>
+              <label for="type">Tipo</label>
+              <select id="type" name="type">
+                <option value="reclamação">Reclamação</option>
+                <option value="denúncia">Denúncia</option>
+                <option value="sugestão">Sugestão</option>
+              </select>
+            </div>
+            <div>
+              <label for="priority">Prioridade</label>
+              <select id="priority" name="priority">
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+                <option value="critica">Crítica</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="desc">Descrição</label>
+            <textarea id="desc" name="desc" placeholder="Descreva o ocorrido" required></textarea>
+          </div>
+
+          <div class="field row">
+            <label><input type="checkbox" id="anonymous" checked> Publicar anonimamente</label>
+            <input id="author" type="text" placeholder="Seu nome (opcional)" />
+          </div>
+
+          <div class="actions">
+            <button class="btn" type="submit">Enviar</button>
+            <button type="button" id="clearBtn">Limpar</button>
+          </div>
+        </form>
+        <p class="note">Observação: quando marcado como anônimo, o nome não é armazenado nem incluído na assinatura para preservar privacidade.</p>
+      </section>
+
+      <section id="posts" class="view card hidden posts">
+        <h1>Posts</h1>
+
+        <div class="filters">
+          <select id="filterPriority"><option value="all">Todas prioridades</option><option value="critica">Crítica</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select>
+          <select id="filterState"><option value="open">Abertos</option><option value="resolved">Resolvidos</option><option value="archived">Arquivados</option><option value="all">Todos</option></select>
+          <button id="myPostsBtn" class="outline">Meus posts</button>
+        </div>
+
+        <div id="postsList"></div>
+      </section>
+
+      <section id="coord" class="view card hidden">
+        <h1>Painel da Coordenação</h1>
+        <div id="coordLogin" class="card small">
+          <label for="coordPass">Senha da coordenação</label>
+          <input id="coordPass" type="password" placeholder="Senha">
+          <div style="margin-top:8px"><button id="coordLoginBtn" class="btn">Entrar</button></div>
+          <p class="meta">A senha configurada é apenas demonstrativa. Troque por uma solução segura em produção.</p>
+        </div>
+
+        <div id="coordPanel" class="hidden">
+          <div class="coord-controls">
+            <select id="coordFilterPriority"><option value="all">Todas prioridades</option><option value="critica">Crítica</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select>
+            <select id="coordFilterState"><option value="all">Todos estados</option><option value="open">Abertos</option><option value="resolved">Resolvidos</option><option value="archived">Arquivados</option></select>
+            <button id="coordLogout" class="outline">Sair</button>
+          </div>
+
+          <div id="coordList"></div>
+        </div>
+      </section>
+
+      <section id="settings" class="view card hidden">
+        <h1>Configurações</h1>
+        <p class="meta">Configurações locais e preferências (salvas no navegador).</p>
+        <form id="settingsForm">
+          <div class="field">
+            <label for="displayName">Nome padrão (apenas para preencher se não for anônimo)</label>
+            <input id="displayName" type="text">
+          </div>
+          <div class="actions">
+            <button class="btn" type="submit">Salvar</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
