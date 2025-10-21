@@ -1,0 +1,200 @@
+:root {
+    --bg: #f4f6fb;
+    --card: #fff;
+    --accent: #2b6ef6;
+    --muted: #6b7280
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: #0f1724
+}
+
+.app {
+    display: flex;
+    min-height: 100vh
+}
+
+.sidebar {
+    width: 260px;
+    background: #0b1220;
+    color: #fff;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 18px
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px
+}
+
+.nav button {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    text-align: left;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer
+}
+
+.nav button.active {
+    background: rgba(255, 255, 255, 0.06)
+}
+
+.main {
+    flex: 1;
+    padding: 28px
+}
+
+.card {
+    background: var(--card);
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    margin-bottom: 16px
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    align-items: center
+}
+
+h1 {
+    margin: 0 0 12px 0;
+    font-size: 20px
+}
+
+.meta {
+    font-size: 13px;
+    color: var(--muted)
+}
+
+.field {
+    margin-bottom: 12px
+}
+
+.field.two {
+    display: flex;
+    gap: 12px
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px
+}
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e6eef8;
+    border-radius: 8px;
+    background: #fbfdff
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical
+}
+
+.btn {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 0;
+    cursor: pointer
+}
+
+.outline {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+.hidden {
+    display: none
+}
+
+.posts .post {
+    border-left: 4px solid #e9eefc;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #fff;
+    border-radius: 8px
+}
+
+.note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px
+}
+
+.small {
+    max-width: 420px
+}
+
+.coord-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px
+}
+
+.post-controls {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px
+}
+
+@media(max-width:800px) {
+    .sidebar {
+        display: none
+    }
+}
+
+/* Modal básico */
+.modal{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:flex-start;justify-content:center;padding:24px;z-index:60}
+.modal .card{animation:pop .12s ease-out}
+@keyframes pop{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+
+/* pequenas melhorias */
+.meta small{color:var(--muted)}
+

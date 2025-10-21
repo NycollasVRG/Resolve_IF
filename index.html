@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Portal de Reclamações / Denúncias</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="app">
@@ -14,7 +14,9 @@
         <button data-view="home" class="active">Início</button>
         <button data-view="create">Criar reclamação/denúncia</button>
         <button data-view="posts">Posts</button>
+        <button data-view="prof" id="profBtn" class="hidden">Portal Professor</button>
         <button data-view="coord">Painel Coordenação</button>
+        <button data-view="coordportal" id="coordPortalBtn" class="hidden">Portal Coordenador</button>
         <button data-view="settings">Configurações</button>
       </nav>
     </aside>
@@ -112,6 +114,18 @@
         </div>
       </section>
 
+      <section id="prof" class="view card hidden">
+        <h1>Portal do Professor</h1>
+        <p class="meta">Ferramentas para professores (lista de posts relacionados, notificar coordenação, etc.).</p>
+        <div id="profList"></div>
+      </section>
+
+      <section id="coordportal" class="view card hidden">
+        <h1>Portal do Coordenador</h1>
+        <p class="meta">Visão do coordenador com filtros e prioridades; acesso baseado no papel do usuário.</p>
+        <div id="coordPortalList"></div>
+      </section>
+
       <section id="settings" class="view card hidden">
         <h1>Configurações</h1>
         <p class="meta">Configurações locais e preferências (salvas no navegador).</p>
@@ -133,6 +147,6 @@
     </main>
   </div>
 
-  <script src="app.js" type="module"></script>
+  <script src="js/app.js" type="module"></script>
 </body>
 </html>
