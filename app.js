@@ -1,5 +1,6 @@
 // app.js - lógica do portal
 import { sha256 } from './lib_sha256.js';
+import { getUsers, saveUsers, registerUser, loginUser, getCurrentUser, setCurrentUser, logoutUser } from './auth.js';
 
 // Utilitários
 const $ = sel=> document.querySelector(sel);
@@ -17,6 +18,7 @@ navButtons.forEach(btn=> btn.addEventListener('click', ()=>{
 
 // Dados e persistência
 const STORAGE_KEY = 'resolve_if_posts_v1';
+
 let posts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 
 function savePosts(){
@@ -29,6 +31,8 @@ async function computeSignature(item){
   const base = [item.title, item.type, item.priority, item.desc, item.date].join('|');
   return await sha256(base);
 }
+
+// Autenticação é feita em `auth.js` (getCurrentUser, registerUser, loginUser, setCurrentUser, logoutUser)
 
 // Render posts (visão pública)
 const postsList = $('#postsList');
@@ -70,12 +74,18 @@ function escapeHtml(str){
 const form = $('#complaintForm');
 form.addEventListener('submit', async (e)=>{
   e.preventDefault();
+  const current = getCurrentUser();
+  if(!current){
+    alert('Você precisa entrar antes de criar uma reclamação.');
+    document.getElementById('loginBtn').click?.();
+    return;
+  }
   const title = form.title.value.trim();
   const type = form.type.value;
   const priority = form.priority.value;
   const desc = form.desc.value.trim();
   const anonymous = $('#anonymous').checked;
-  const author = form.author.value.trim() || $('#displayName')?.value || '';
+  const author = anonymous? null : (current.name || current.email || '');
   const date = new Date().toISOString().slice(0,10);
   const item = {
     id: Date.now().toString(36),
@@ -86,7 +96,7 @@ form.addEventListener('submit', async (e)=>{
     date,
     anonymous: !!anonymous,
     author: anonymous? null : author,
-    authorId: anonymous? null : (author? hashString(author) : null),
+    authorId: anonymous? null : current.id,
     resolved: false,
     archived: false,
     signature: ''
@@ -106,6 +116,34 @@ $('#clearBtn').addEventListener('click', ()=> form.reset());
 $('#filterPriority').addEventListener('change', ()=> renderPosts({priority: $('#filterPriority').value, state: $('#filterState').value}));
 $('#filterState').addEventListener('change', ()=> renderPosts({priority: $('#filterPriority').value, state: $('#filterState').value}));
 $('#myPostsBtn').addEventListener('click', ()=> renderPosts({priority: $('#filterPriority').value, state: $('#filterState').value, mine:true}));
+
+// Auth UI wiring
+const authStatus = $('#authStatus');
+const loginBtn = $('#loginBtn');
+const logoutBtn = $('#logoutBtn');
+const createAuthWarning = $('#createAuthWarning');
+const openRegister = $('#openRegister');
+
+function renderAuthState(){
+  const cur = getCurrentUser();
+  if(cur){
+    authStatus.textContent = `Autenticado como ${cur.name || cur.email} (${cur.role||'aluno'})`;
+    logoutBtn.classList.remove('hidden');
+    loginBtn.classList.add('hidden');
+    createAuthWarning.classList.add('hidden');
+  } else {
+    authStatus.textContent = 'Não autenticado';
+    logoutBtn.classList.add('hidden');
+    loginBtn.classList.remove('hidden');
+    createAuthWarning.classList.remove('hidden');
+  }
+}
+
+loginBtn.addEventListener('click', ()=> { location.href = 'login.html'; });
+logoutBtn.addEventListener('click', ()=> { logoutUser(); alert('Logout realizado'); renderAuthState(); });
+openRegister?.addEventListener('click', ()=> { location.href = 'register.html'; });
+
+// Login and registration handled on separate pages (login.html, register.html)
 
 // Coordenação — login simples (demo)
 const COORD_PASS = 'coord1234'; // DEMO. em produção, usar backend e autenticação real
@@ -172,6 +210,7 @@ function renderCoordList(){
 
 // inicial render
 renderPosts({priority: $('#filterPriority').value || 'all', state: $('#filterState').value || 'open'});
+renderAuthState();
 
 // helpers simples
 function hashString(s){
@@ -180,4 +219,4 @@ function hashString(s){
 }
 
 // export pequeno para uso por testes (opcional)
-window.__resolve_if = { posts, savePosts, renderPosts };
+window.__resolve_if = { posts, savePosts, renderPosts, getUsers, getCurrentUser };

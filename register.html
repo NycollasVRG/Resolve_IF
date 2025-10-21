@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registrar - Portal</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <main class="auth-card">
+    <h2>Registrar</h2>
+    <div class="field"><label>Nome</label><input id="name" type="text"></div>
+    <div class="field"><label>Email</label><input id="email" type="email"></div>
+    <div class="field"><label>Papel</label>
+      <select id="role">
+        <option value="aluno">Aluno</option>
+        <option value="professor">Professor</option>
+        <option value="coordenador">Coordenador</option>
+      </select>
+    </div>
+    <div class="field"><label>Senha</label><input id="password" type="password"></div>
+    <div class="field"><label>Confirmar senha</label><input id="password2" type="password"></div>
+    <div class="actions">
+      <button id="submit" class="btn">Registrar</button>
+      <a href="login.html" class="link">Já tem conta? Entrar</a>
+    </div>
+    <div id="msg" class="meta"></div>
+  </main>
+  <script type="module" src="register.js"></script>
+</body>
+</html>
