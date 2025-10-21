@@ -8,6 +8,9 @@ Arquivos principais:
 - `app.js` - lógica da aplicação (criação de posts, persistência em `localStorage`, filtros, painel da coordenação demo).
 - `lib_sha256.js` - implementação SHA-256 para assinatura de integridade.
 
+Usuários e papéis:
+- O formulário de registro agora pede o papel do usuário (aluno, professor, coordenador). Esse papel é salvo junto com o usuário no `localStorage` e exibido na UI quando autenticado.
+
 Como a privacidade e integridade são tratadas (resumo):
 - Anonimato opcional: o aluno pode marcar a submissão como anônima; nesse caso o nome não é salvo.
 - Assinatura de integridade: cada submissão recebe uma assinatura SHA-256 calculada a partir do conteúdo (título, tipo, prioridade, descrição, data). Essa assinatura permite verificar se o conteúdo foi alterado depois de salvo.
@@ -23,6 +26,9 @@ Observações e próximos passos recomendados:
 - Trocar o mecanismo de autenticação por um backend real (ex: JWT, OAuth) para ambientes de produção.
 - Migrar o armazenamento de `localStorage` para um serviço seguro com criptografia e logs de auditoria.
 - Adicionar um mecanismo de verificação offline/externa da assinatura para checar integridade quando necessário.
+
+Segurança e papéis:
+- Em produção, atribuição de papéis e controle de acesso deve ser feita no backend com validação e permissões — não confie apenas em campos enviados pelo cliente.
 
 Licença: código de demonstração livre para uso educacional.
 # Reclamacoes_E_Denuncias

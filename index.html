@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Portal de Reclamações / Denúncias</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="app">
@@ -14,7 +14,9 @@
         <button data-view="home" class="active">Início</button>
         <button data-view="create">Criar reclamação/denúncia</button>
         <button data-view="posts">Posts</button>
+        <button data-view="prof" id="profBtn" class="hidden">Portal Professor</button>
         <button data-view="coord">Painel Coordenação</button>
+        <button data-view="coordportal" id="coordPortalBtn" class="hidden">Portal Coordenador</button>
         <button data-view="settings">Configurações</button>
       </nav>
     </aside>
@@ -23,10 +25,19 @@
       <section id="home" class="view card">
         <h1>Bem-vindo</h1>
         <p class="meta">Use o menu para criar uma nova reclamação ou visualizar posts. A privacidade e integridade são priorizadas.</p>
+        <div style="margin-top:12px">
+          <div id="authStatus" class="meta">Não autenticado</div>
+          <div style="margin-top:8px">
+            <button id="loginBtn" class="outline">Entrar / Registrar</button>
+            <button id="logoutBtn" class="outline hidden">Sair</button>
+          </div>
+        </div>
       </section>
 
       <section id="create" class="view card hidden">
         <h1>Criar reclamação / denúncia</h1>
+        <p class="meta">Você precisa entrar para criar uma reclamação. Caso queira publicar anonimamente, ainda será exigido login (apenas para controle local).</p>
+        <div id="createAuthWarning" class="note hidden">Faça login para criar uma reclamação.</div>
         <form id="complaintForm">
           <div class="field">
             <label for="title">Assunto</label>
@@ -103,6 +114,18 @@
         </div>
       </section>
 
+      <section id="prof" class="view card hidden">
+        <h1>Portal do Professor</h1>
+        <p class="meta">Ferramentas para professores (lista de posts relacionados, notificar coordenação, etc.).</p>
+        <div id="profList"></div>
+      </section>
+
+      <section id="coordportal" class="view card hidden">
+        <h1>Portal do Coordenador</h1>
+        <p class="meta">Visão do coordenador com filtros e prioridades; acesso baseado no papel do usuário.</p>
+        <div id="coordPortalList"></div>
+      </section>
+
       <section id="settings" class="view card hidden">
         <h1>Configurações</h1>
         <p class="meta">Configurações locais e preferências (salvas no navegador).</p>
@@ -115,10 +138,15 @@
             <button class="btn" type="submit">Salvar</button>
           </div>
         </form>
+        <div style="margin-top:12px" class="card small">
+          <h3>Login / Registro</h3>
+          <p class="meta">Gerencie usuários locais (demo).</p>
+          <button id="openRegister" class="outline">Não é cadastrado? Faça seu cadastro aqui</button>
+        </div>
       </section>
     </main>
   </div>
 
-  <script src="app.js" type="module"></script>
+  <script src="js/app.js" type="module"></script>
 </body>
 </html>
