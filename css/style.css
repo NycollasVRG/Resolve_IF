@@ -25,12 +25,17 @@ body {
 
 .sidebar {
     width: 260px;
-    background: #0b1220;
+    background: #00091b;
     color: #fff;
     padding: 20px 16px;
     display: flex;
     flex-direction: column;
     gap: 18px
+}
+
+.sidebar img{
+    width: 30px;
+    display: flex   ;
 }
 
 .brand {
@@ -61,6 +66,19 @@ body {
 .main {
     flex: 1;
     padding: 28px
+}
+
+.introdution{
+    display:flex;
+    flex-direction:column;
+}
+
+.introdution p{
+    margin: 8px;
+}
+
+.introdution img{
+    width: 200px;;
 }
 
 .card {
