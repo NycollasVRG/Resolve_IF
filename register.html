@@ -12,10 +12,22 @@
     <div class="field"><label>Nome</label><input id="name" type="text"></div>
     <div class="field"><label>Email</label><input id="email" type="email"></div>
     <div class="field"><label>Papel</label>
-      <select id="role">
+      <select id="role" onchange="toggleSubjectField()">
         <option value="aluno">Aluno</option>
         <option value="professor">Professor</option>
         <option value="coordenador">Coordenador</option>
+      </select>
+    </div>
+    <div class="field subject-field hidden"><label>Disciplina</label>
+      <select id="subject">
+        <option value="matematica">Matemática</option>
+        <option value="portugues">Português</option>
+        <option value="fisica">Física</option>
+        <option value="quimica">Química</option>
+        <option value="historia">História</option>
+        <option value="geografia">Geografia</option>
+        <option value="ingles">Inglês</option>
+        <option value="biologia">Biologia</option>
       </select>
     </div>
     <div class="field"><label>Senha</label><input id="password" type="password"></div>
