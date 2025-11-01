@@ -15,13 +15,20 @@ export async function hashPassword(password){
   return await sha256(password || '');
 }
 
-export async function registerUser({name, email, password, role='aluno'}){
+export async function registerUser({name, email, password, role='aluno', subject}){
   const users = getUsers();
   if(users.find(u=> u.email === email)){
     throw new Error('Email já cadastrado');
   }
   const passHash = await hashPassword(password);
-  const user = { id: Date.now().toString(36), name, email, passHash, role };
+  const user = { 
+    id: Date.now().toString(36), 
+    name, 
+    email, 
+    passHash, 
+    role,
+    subject: role === 'professor' ? subject : undefined 
+  };
   users.push(user);
   saveUsers(users);
   return user;

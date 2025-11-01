@@ -59,6 +59,7 @@ function renderPostHtml(p){
       </div>
       <div class="meta">Prioridade: ${p.priority} • Tipo: ${p.type}</div>
       <div class="meta">Por ${p.anonymous? 'Anônimo' : escapeHtml(p.author || '—')}</div>
+      ${p.teacherSubject ? `<div class="meta">Professor/Disciplina: ${escapeHtml(p.teacherSubject)}</div>` : ''}
       <p style="margin-top:8px">${escapeHtml(p.desc)}</p>
     </article>`;
 }
@@ -83,6 +84,7 @@ form.addEventListener('submit', async (e)=>{
   const type = form.type.value;
   const priority = form.priority.value;
   const desc = form.desc.value.trim();
+  const teacherSubject = form.teacherSubject.value;
   const anonymous = $('#anonymous').checked;
   const author = anonymous? null : (current.name || current.email || '');
   const date = new Date().toISOString().slice(0,10);
@@ -92,6 +94,7 @@ form.addEventListener('submit', async (e)=>{
     type,
     priority,
     desc,
+    teacherSubject,
     date,
     anonymous: !!anonymous,
     author: anonymous? null : author,
@@ -221,11 +224,71 @@ function renderProfList(){
   const cur = getCurrentUser();
   const listEl = $('#profList');
   if(!cur || cur.role !== 'professor') { listEl.innerHTML = '<p class="meta">Acesso negado. Apenas professores.</p>'; return }
-  const list = posts.slice().reverse().filter(p=> !p.archived);
+  
+  // Filtrar posts não arquivados e relacionados à disciplina do professor
+  const list = posts.slice().reverse().filter(p=> {
+    return !p.archived && p.teacherSubject && p.teacherSubject.includes(cur.subject);
+  });
+  
   listEl.innerHTML = list.map(p=> `
-    <article class="post"><strong>${escapeHtml(p.title)}</strong><div class="meta">${p.date} • ${p.priority}</div><p>${escapeHtml(p.desc)}</p></article>
-  `).join('') || '<p class="meta">Nenhum post.</p>';
+    <article class="post">
+      <strong>${escapeHtml(p.title)}</strong>
+      <div class="meta">${p.date} • ${p.priority}</div>
+      <div class="meta">Estado: ${p.resolved ? 'Resolvido' : 'Aberto'}</div>
+      <p>${escapeHtml(p.desc)}</p>
+      <div class="post-controls">
+        <button data-id="${p.id}" data-action="toggleResolved" class="outline">${p.resolved ? 'Reabrir' : 'Marcar como resolvido'}</button>
+        <button data-id="${p.id}" data-action="addComment" class="outline">Adicionar comentário</button>
+      </div>
+    </article>
+  `).join('') || '<p class="meta">Nenhuma reclamação/sugestão relacionada a você.</p>';
+  
+  // Delegar eventos dos botões
+  listEl.querySelectorAll('button').forEach(b=> b.addEventListener('click', (e)=>{
+    const id = b.dataset.id;
+    const action = b.dataset.action;
+    const idx = posts.findIndex(x=> x.id===id);
+    if(idx===-1) return;
+    
+    if(action === 'toggleResolved') {
+      posts[idx].resolved = !posts[idx].resolved;
+      savePosts();
+      renderProfList();
+    }
+    else if(action === 'addComment') {
+      const comment = prompt('Digite seu comentário:');
+      if(!comment) return;
+      if(!posts[idx].comments) posts[idx].comments = [];
+      posts[idx].comments.push({
+        author: cur.name,
+        date: new Date().toISOString().slice(0,10),
+        text: comment
+      });
+      savePosts();
+      renderProfList();
+    }
+  }));
+  
+  // Renderizar comentários para cada post
+  list.forEach(p => {
+    if(p.comments && p.comments.length > 0) {
+      const commentSection = document.createElement('div');
+      commentSection.className = 'comments';
+      commentSection.innerHTML = `
+        <h4>Comentários:</h4>
+        ${p.comments.map(c => `
+          <div class="comment">
+            <div class="meta">${c.author} - ${c.date}</div>
+            <p>${escapeHtml(c.text)}</p>
+          </div>
+        `).join('')}
+      `;
+      const article = listEl.querySelector(`[data-id="${p.id}"]`).closest('.post');
+      article.appendChild(commentSection);
+    }
+  });
 }
+
 
 function renderCoordPortalList(){
   const cur = getCurrentUser();
