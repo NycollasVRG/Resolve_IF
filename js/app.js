@@ -153,6 +153,28 @@ const createAuthWarning = $('#createAuthWarning');
 const openRegister = $('#openRegister');
 const profBtn = $('#profBtn');
 const coordPortalBtn = $('#coordPortalBtn');
+const menuBtn = $('#menuBtn');
+const closeSidebarBtn = $('#closeSidebar');
+
+// Mobile sidebar toggle
+function openSidebar(){
+  document.querySelector('.app')?.classList.add('sidebar-open');
+}
+function closeSidebar(){
+  document.querySelector('.app')?.classList.remove('sidebar-open');
+}
+if(menuBtn){ menuBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openSidebar(); }); }
+if(closeSidebarBtn){ closeSidebarBtn.addEventListener('click', (e)=>{ e.stopPropagation(); closeSidebar(); }); }
+// close when clicking outside the sidebar (on overlay)
+document.addEventListener('click', (e)=>{
+  const appEl = document.querySelector('.app');
+  if(!appEl) return;
+  if(!appEl.classList.contains('sidebar-open')) return;
+  const sidebar = document.querySelector('.sidebar');
+  if(sidebar && !sidebar.contains(e.target)){
+    closeSidebar();
+  }
+});
 
 function renderAuthState(){
   const cur = getCurrentUser();

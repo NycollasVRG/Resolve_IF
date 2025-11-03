@@ -68,6 +68,12 @@ body {
     padding: 28px
 }
 
+.topbar-mobile{display:none;margin-bottom:8px}
+.topbar-mobile .mobile-only{display:none}
+
+/* helper: elements that show only on small screens */
+.mobile-only{display:none}
+
 .introdution{
     display:flex;
     flex-direction:column;
@@ -240,6 +246,18 @@ textarea {
     .filters { flex-wrap: wrap }
     .nav button { padding: 8px; font-size: 14px }
     .posts .post { padding: 10px }
+    .topbar-mobile{display:flex}
+    .topbar-mobile .mobile-only{display:inline-block}
+    /* make any mobile-only elements inside the sidebar visible and touch-friendly */
+    .sidebar .mobile-only{display:inline-block;position:absolute;top:12px;right:12px;padding:8px;line-height:1;border-radius:8px;background:rgba(255,255,255,0.04);color:#fff}
+    .sidebar .mobile-only:focus{outline:2px solid rgba(255,255,255,0.12);box-shadow:0 0 0 4px rgba(43,110,246,0.08)}
+    /* Sidebar overlay / slide-in */
+    .sidebar{display:flex;position:fixed;left:0;top:0;height:100vh;z-index:60;transform:translateX(-110%);transition:transform .22s ease;box-shadow:0 8px 24px rgba(2,6,23,0.5)}
+    .app.sidebar-open .sidebar{transform:translateX(0)}
+    /* overlay using app class */
+    .app.sidebar-open::before{content:"";position:fixed;inset:0;background:rgba(2,6,23,0.45);z-index:50}
+    /* ensure main is scrollable under overlay */
+    .app.sidebar-open .main{pointer-events:auto}
 }
 
 /* tablet: small sidebar, more compact spacing */
