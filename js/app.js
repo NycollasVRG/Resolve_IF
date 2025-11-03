@@ -15,6 +15,7 @@ navButtons.forEach(btn=> btn.addEventListener('click', ()=>{
   views.forEach(v=> v.classList.toggle('hidden', v.id !== target));
   // render dynamic views
   if(target === 'prof') renderProfList();
+  if(target === 'create') populateProfessorsForCreate();
   if(target === 'coordportal') renderCoordPortalList();
 }));
 
@@ -52,7 +53,7 @@ function renderPosts(filter={priority:'all',state:'open',mine:false}){
 
 function renderPostHtml(p){
   return `
-    <article class="post">
+    <article class="post" data-id="${p.id}">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <strong>${escapeHtml(p.title)}</strong>
         <span class="meta">${p.date}</span>
@@ -60,6 +61,7 @@ function renderPostHtml(p){
       <div class="meta">Prioridade: ${p.priority} • Tipo: ${p.type}</div>
       <div class="meta">Por ${p.anonymous? 'Anônimo' : escapeHtml(p.author || '—')}</div>
       ${p.teacherSubject ? `<div class="meta">Professor/Disciplina: ${escapeHtml(p.teacherSubject)}</div>` : ''}
+      ${p.professorId? `<div class="meta">Relacionado a: ${escapeHtml((getUsers().find(u=> u.id === p.professorId) || {}).name || '—')}</div>` : ''}
       <p style="margin-top:8px">${escapeHtml(p.desc)}</p>
     </article>`;
 }
@@ -72,6 +74,26 @@ function escapeHtml(str){
 
 // Form criação
 const form = $('#complaintForm');
+// select para relacionar post a professor específico
+const postProfessorSelect = $('#postProfessor');
+
+// popular select de professores para o formulário de criação
+function populateProfessorsForCreate(){
+  const sel = $('#postProfessor');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">Selecionar professor (opcional)</option>';
+  const users = getUsers();
+  const profs = users.filter(u=> u.role === 'professor');
+  profs.forEach(p=>{
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = `${p.name} (${p.subject || '—'})`;
+    sel.appendChild(opt);
+  });
+}
+
+// popular ao carregar e também sempre que o view de criar é mostrado
+document.addEventListener('DOMContentLoaded', populateProfessorsForCreate);
 form.addEventListener('submit', async (e)=>{
   e.preventDefault();
   const current = getCurrentUser();
@@ -86,6 +108,8 @@ form.addEventListener('submit', async (e)=>{
   const desc = form.desc.value.trim();
   const teacherSubject = form.teacherSubject.value;
   const anonymous = $('#anonymous').checked;
+  // professor escolhido no momento do envio tem prioridade sobre o professor do perfil
+  const chosenProfessor = document.getElementById('postProfessor')?.value || null;
   const author = anonymous? null : (current.name || current.email || '');
   const date = new Date().toISOString().slice(0,10);
   const item = {
@@ -99,6 +123,8 @@ form.addEventListener('submit', async (e)=>{
     anonymous: !!anonymous,
     author: anonymous? null : author,
     authorId: anonymous? null : current.id,
+  // relacionar post ao professor: prioriza escolha no formulário; se não houver, usa a relação do perfil do aluno
+  professorId: chosenProfessor || current.professorId || null,
     resolved: false,
     archived: false,
     signature: ''
@@ -227,15 +253,21 @@ function renderProfList(){
   
   // Filtrar posts não arquivados e relacionados à disciplina do professor
   const list = posts.slice().reverse().filter(p=> {
-    return !p.archived && p.teacherSubject && p.teacherSubject.includes(cur.subject);
+    // Aparece para o professor se:
+    // - o post tiver professorId igual ao professor autenticado (relação direta aluno->professor), OU
+    // - o post indicar uma disciplina/professor que contenha a disciplina do professor
+    const byProfessorRelation = p.professorId && p.professorId === cur.id;
+    const bySubject = p.teacherSubject && cur.subject && p.teacherSubject.includes(cur.subject);
+    return !p.archived && (byProfessorRelation || bySubject);
   });
   
   listEl.innerHTML = list.map(p=> `
-    <article class="post">
+    <article class="post" data-id="${p.id}">
       <strong>${escapeHtml(p.title)}</strong>
       <div class="meta">${p.date} • ${p.priority}</div>
       <div class="meta">Estado: ${p.resolved ? 'Resolvido' : 'Aberto'}</div>
       <p>${escapeHtml(p.desc)}</p>
+      ${p.professorId? `<div class="meta">Relacionado a: ${escapeHtml((getUsers().find(u=> u.id === p.professorId) || {}).name || '—')}</div>` : ''}
       <div class="post-controls">
         <button data-id="${p.id}" data-action="toggleResolved" class="outline">${p.resolved ? 'Reabrir' : 'Marcar como resolvido'}</button>
         <button data-id="${p.id}" data-action="addComment" class="outline">Adicionar comentário</button>

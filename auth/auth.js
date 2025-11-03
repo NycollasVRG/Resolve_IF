@@ -15,7 +15,7 @@ export async function hashPassword(password){
   return await sha256(password || '');
 }
 
-export async function registerUser({name, email, password, role='aluno', subject}){
+export async function registerUser({name, email, password, role='aluno', subject, professorId}){
   const users = getUsers();
   if(users.find(u=> u.email === email)){
     throw new Error('Email já cadastrado');
@@ -27,7 +27,9 @@ export async function registerUser({name, email, password, role='aluno', subject
     email, 
     passHash, 
     role,
-    subject: role === 'professor' ? subject : undefined 
+    subject: role === 'professor' ? subject : undefined,
+    // relation: aluno -> professor
+    professorId: role === 'aluno' ? professorId : undefined
   };
   users.push(user);
   saveUsers(users);
