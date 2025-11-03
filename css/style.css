@@ -227,10 +227,46 @@ textarea {
     margin: 4px 0 0;
 }
 
-@media(max-width:800px) {
-    .sidebar {
-        display: none
-    }
+/* mobile: hide sidebar and stack layout */
+@media (max-width:600px) {
+    .sidebar { display: none }
+    .app { flex-direction: column }
+    .main { padding: 12px }
+    h1 { font-size: 18px }
+    .brand { font-size: 16px }
+    .introdution img { width: 140px }
+    .card { padding: 12px; border-radius: 8px }
+    .field.two { flex-direction: column }
+    .filters { flex-wrap: wrap }
+    .nav button { padding: 8px; font-size: 14px }
+    .posts .post { padding: 10px }
+}
+
+/* tablet: small sidebar, more compact spacing */
+@media (min-width:601px) and (max-width:1024px) {
+    .sidebar { width: 220px }
+    .main { padding: 20px }
+    .introdution img { width: 180px }
+    .card { padding: 16px }
+    .postsList { display: block }
+}
+
+/* desktop: multi-column posts, comfortable padding */
+@media (min-width:1025px) and (max-width:1399px) {
+    .sidebar { width: 240px }
+    .main { padding: 28px 40px }
+    .postsList { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px }
+    .posts .post { margin-bottom: 0 }
+}
+
+/* large screens / TV: roomy layout and larger type */
+@media (min-width:1400px) {
+    .sidebar { width: 300px; padding: 32px }
+    .main { padding: 48px 80px; font-size: 18px }
+    .brand { font-size: 22px }
+    .introdution img { width: 260px }
+    .postsList { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px }
+    .posts .post { padding: 20px; border-left-width: 6px }
 }
 
 /* Modal básico */
